@@ -78,6 +78,36 @@ async function run() {
             res.send(spots);
         });
 
+        app.patch("/visited/:id", async (req, res) => {
+  const id = req.params.id;
+  const updatedData = req.body;
+
+  try {
+    const filter = { _id: new ObjectId(id) };
+
+    const updateDoc = {
+      $set: {
+        image: updatedData.image,
+        tourists_spot_name: updatedData.tourists_spot_name,
+        country_Name: updatedData.country_Name,
+        location: updatedData.location,
+        short_description: updatedData.short_description,
+        average_cost: updatedData.average_cost,
+        seasonality: updatedData.seasonality,
+        travel_time: updatedData.travel_time,
+        totalVisitorsPerYear: updatedData.totalVisitorsPerYear,
+        user_email: updatedData.user_email,
+        user_name: updatedData.user_name,
+      },
+    };
+
+    const result = await visitedCollection.updateOne(filter, updateDoc);
+
+    res.send(result);
+  } catch (error) {
+    res.status(500).send({ message: "Update failed", error });
+  }
+});
         app.delete("/visited/:id", async (req, res) => {
             res.send(await visitedCollection.deleteOne({ _id: new ObjectId(req.params.id) }));
         });
